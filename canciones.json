@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "titulo": "Sol de la mañana",
+    "artista": "Artista Demo",
+    "categoria": "Canto",
+    "letra": "Sol de la mañana, me despierta\nCon tu brillo en el corazón\nY me enseñas a seguir\nAunque el camino sea largo."
+  },
+  {
+    "id": 2,
+    "titulo": "Camino sin fin",
+    "artista": "Grupo Demo",
+    "categoria": "Ensamble",
+    "letra": "Si el viento me empuja\nYo sigo caminando\nCon la fe en la mano\nY el sueño en el alma."
+  },
+  {
+    "id": 3,
+    "titulo": "Raíces del pueblo",
+    "artista": "Folclore Demo",
+    "categoria": "Folclore",
+    "letra": "De la tierra nací\nCon la música en mi voz\nY llevo en el pecho\nLas raíces del pueblo."
+  }
+]

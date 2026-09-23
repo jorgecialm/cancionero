@@ -1,6 +1,6 @@
 // 🚀 SERVICE WORKER - ESTRATEGIA INTELIGENTE DE CACHING
 
-const CACHE_NAME = "cancionero-v2";
+const CACHE_NAME = "cancionero-v3";
 const CACHE_EDAD_MAX = 7 * 24 * 60 * 60 * 1000; // 7 días
 
 const ASSETS = [
@@ -11,7 +11,6 @@ const ASSETS = [
     "./sync.js",
     "./supabase-config.js",
     "./canciones.json",
-    "./manifest.json",
     "./icon-192.png"
 ];
 
@@ -19,6 +18,7 @@ const ASSETS = [
 
 self.addEventListener("install", (evento) => {
     console.log("🚀 SW: Instalando...");
+    self.skipWaiting();
     evento.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(ASSETS);
@@ -30,6 +30,7 @@ self.addEventListener("install", (evento) => {
 
 self.addEventListener("activate", (evento) => {
     console.log("🚀 SW: Activando...");
+    evento.waitUntil(self.clients.claim());
     evento.waitUntil(
         caches.keys().then((nombres) => {
             return Promise.all(

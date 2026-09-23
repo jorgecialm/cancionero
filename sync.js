@@ -5,7 +5,7 @@ class SincronizadorCancionero {
     constructor() {
         this.token = null;
         this.tieneConexion = navigator.onLine;
-        this.estadoSincronizacion = "sincronizado"; // sincronizado, pendiente, error
+        this.estadoSincronizacion = "sincronizado";
         this.cambiosPendientes = [];
         this.intentosReintento = 0;
         this.maxReintentos = 5;
@@ -17,6 +17,12 @@ class SincronizadorCancionero {
 
     // ========== AUTENTICACIÓN ==========
     async iniciarSesion() {
+        if (!SUPABASE_CONFIG_AVAILABLE || !SUPABASE_URL || !SUPABASE_ANON_KEY || !SUPABASE_EMAIL || !SUPABASE_PASSWORD) {
+            console.warn("⚠️ Supabase no está configurado. La app continuará en modo local.");
+            this.cambiarEstado("pendiente");
+            return;
+        }
+
         try {
             const respuesta = await fetch(
                 `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
@@ -39,6 +45,7 @@ class SincronizadorCancionero {
                 this.token = datos.access_token;
                 sessionStorage.setItem("supabase_access_token", datos.access_token);
                 console.log("✓ Autenticación exitosa");
+                await this.sincronizarCambiosPendientes();
             } else {
                 console.error("❌ Error de autenticación:", datos);
                 this.cambiarEstado("error");
@@ -53,9 +60,50 @@ class SincronizadorCancionero {
         return this.token || sessionStorage.getItem("supabase_access_token");
     }
 
+    crearHeaders(extraHeaders = {}) {
+        const headers = {
+            apikey: SUPABASE_ANON_KEY,
+            "Content-Type": "application/json",
+            ...extraHeaders
+        };
+
+        const token = this.obtenerToken();
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        return headers;
+    }
+
+    async buscarCancionExistente(cancion) {
+        const parametros = new URLSearchParams({
+            select: "*",
+            titulo: `eq.${cancion.titulo}`,
+            artista: `eq.${cancion.artista}`,
+            limit: "1"
+        });
+        const respuesta = await fetch(
+            `${SUPABASE_URL}/rest/v1/canciones?${parametros}`,
+            { headers: this.crearHeaders() }
+        );
+
+        if (!respuesta.ok) {
+            return null;
+        }
+
+        const cancionesEncontradas = await respuesta.json();
+        return cancionesEncontradas[0] || null;
+    }
+
     // ========== CRUD CON SUPABASE ==========
 
     async subirCancion(cancion) {
+        if (!SUPABASE_CONFIG_AVAILABLE || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
+            console.warn("⚠️ Supabase no está configurado para subir canciones.");
+            this.cambiarEstado("pendiente");
+            return null;
+        }
+
         if (!this.tieneConexion) {
             console.log("📡 Sin conexión - guardar en cola de pendientes");
             this.agregarCambioPendiente("INSERT", cancion);
@@ -64,30 +112,34 @@ class SincronizadorCancionero {
         }
 
         try {
-            const token = this.obtenerToken();
+            const { id: _id, ...datosCancion } = cancion;
             const respuesta = await fetch(`${SUPABASE_URL}/rest/v1/canciones`, {
                 method: "POST",
-                headers: {
-                    apikey: SUPABASE_ANON_KEY,
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                    Prefer: "return=representation"
-                },
-                body: JSON.stringify(cancion)
+                headers: this.crearHeaders({ Prefer: "return=representation" }),
+                body: JSON.stringify(datosCancion)
             });
 
             const datos = await respuesta.json();
 
             if (!respuesta.ok) {
+                if (respuesta.status === 409) {
+                    const cancionExistente = await this.buscarCancionExistente(cancion);
+                    if (cancionExistente) {
+                        console.warn("⚠️ La canción ya existía; se reutilizará el registro existente.");
+                        this.cambiarEstado("sincronizado");
+                        return cancionExistente;
+                    }
+                }
+
                 console.error("❌ Error al subir canción:", datos);
                 this.agregarCambioPendiente("INSERT", cancion);
                 this.cambiarEstado("error");
                 return null;
             }
 
-            console.log("✓ Canción subida a Supabase:", datos[0]);
+            console.log("✓ Canción subida a Supabase:", datos[0] || datos);
             this.cambiarEstado("sincronizado");
-            return datos[0];
+            return datos[0] || datos;
 
         } catch (error) {
             console.error("❌ Error de conexión al subir:", error);
@@ -98,6 +150,12 @@ class SincronizadorCancionero {
     }
 
     async actualizarCancion(id, cancion) {
+        if (!SUPABASE_CONFIG_AVAILABLE || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
+            console.warn("⚠️ Supabase no está configurado para actualizar canciones.");
+            this.cambiarEstado("pendiente");
+            return false;
+        }
+
         if (!this.tieneConexion) {
             console.log("📡 Sin conexión - guardar en cola de pendientes");
             this.agregarCambioPendiente("UPDATE", { id, ...cancion });
@@ -106,16 +164,11 @@ class SincronizadorCancionero {
         }
 
         try {
-            const token = this.obtenerToken();
             const respuesta = await fetch(
                 `${SUPABASE_URL}/rest/v1/canciones?id=eq.${id}`,
                 {
                     method: "PATCH",
-                    headers: {
-                        apikey: SUPABASE_ANON_KEY,
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    },
+                    headers: this.crearHeaders(),
                     body: JSON.stringify(cancion)
                 }
             );
@@ -140,6 +193,12 @@ class SincronizadorCancionero {
     }
 
     async eliminarCancion(id) {
+        if (!SUPABASE_CONFIG_AVAILABLE || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
+            console.warn("⚠️ Supabase no está configurado para eliminar canciones.");
+            this.cambiarEstado("pendiente");
+            return false;
+        }
+
         if (!this.tieneConexion) {
             console.log("📡 Sin conexión - guardar en cola de pendientes");
             this.agregarCambioPendiente("DELETE", { id });
@@ -148,16 +207,11 @@ class SincronizadorCancionero {
         }
 
         try {
-            const token = this.obtenerToken();
             const respuesta = await fetch(
                 `${SUPABASE_URL}/rest/v1/canciones?id=eq.${id}`,
                 {
                     method: "DELETE",
-                    headers: {
-                        apikey: SUPABASE_ANON_KEY,
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
+                    headers: this.crearHeaders()
                 }
             );
 
@@ -218,7 +272,7 @@ class SincronizadorCancionero {
 
         for (const cambio of this.cambiosPendientes) {
             if (cambio.intentos >= this.maxReintentos) {
-                console.error("⚠️  Máximo de reintentos alcanzado para:", cambio);
+                console.error("⚠️ Máximo de reintentos alcanzado para:", cambio);
                 continue;
             }
 
@@ -251,7 +305,7 @@ class SincronizadorCancionero {
             console.log("✓ Todos los cambios sincronizados");
             this.cambiarEstado("sincronizado");
         } else {
-            console.log("⚠️  Aún hay cambios pendientes:", this.cambiosPendientes.length);
+            console.log("⚠️ Aún hay cambios pendientes:", this.cambiosPendientes.length);
             this.cambiarEstado("pendiente");
         }
     }
