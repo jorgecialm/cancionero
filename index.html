@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cancionero - Gestiona tus canciones desde PC y celular">
+    <meta name="theme-color" content="#1a1a1a">
+    
+    <title>Cancionero</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+</head>
+
+<body>
+
+    <!-- ========== HEADER ========== -->
+    <header class="header">
+        <div class="header-contenido">
+            <h1>🎵 Cancionero</h1>
+            <div id="estado-sincronizacion" class="estado-sincronizacion">
+                <span class="icono-estado sincronizado">✓</span> Sincronizado
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== BUSCADOR ========== -->
+    <input
+        type="text"
+        id="buscador"
+        class="buscador"
+        placeholder="🔍 Buscar canción..."
+        autocomplete="off"
+    >
+
+    <!-- ========== LISTA DE CANCIONES ========== -->
+    <main id="lista-canciones" class="lista-canciones"></main>
+
+    <!-- ========== BOTÓN AGREGAR ========== -->
+    <button id="boton-agregar" class="boton-agregar">+ Agregar canción</button>
+
+    <!-- ========== FORMULARIO ========== -->
+    <section id="formulario-cancion" class="formulario-cancion">
+
+        <h2 id="titulo-formulario">Agregar canción</h2>
+
+        <form id="form-cancion" class="form-cancion">
+
+            <div class="grupo-campo">
+                <label for="titulo">Título *</label>
+                <input
+                    type="text"
+                    id="titulo"
+                    placeholder="Título de la canción"
+                    required
+                >
+            </div>
+
+            <div class="grupo-campo">
+                <label for="artista">Artista *</label>
+                <input
+                    type="text"
+                    id="artista"
+                    placeholder="Nombre del artista"
+                    required
+                >
+            </div>
+
+            <div class="grupo-campo">
+                <label for="categoria">Categoría *</label>
+                <select id="categoria" required>
+                    <option value="">Seleccionar categoría</option>
+                    <option value="Ensamble">Ensamble</option>
+                    <option value="Canto">Canto</option>
+                    <option value="Folclore">Folclore</option>
+                </select>
+            </div>
+
+            <div class="grupo-campo">
+                <label for="letra">Letra *</label>
+                <textarea
+                    id="letra"
+                    placeholder="Letra de la canción"
+                    required
+                    rows="10"
+                ></textarea>
+            </div>
+
+            <div class="grupo-botones">
+                <button type="submit" id="boton-guardar" class="boton-guardar">
+                    Agregar canción
+                </button>
+                <button type="button" class="boton-cancelar" onclick="volverALista()">
+                    Cancelar
+                </button>
+            </div>
+
+        </form>
+
+    </section>
+
+    <!-- ========== SCRIPTS ========== -->
+    <script src="supabase-config.js"></script>
+    <script src="sync.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>

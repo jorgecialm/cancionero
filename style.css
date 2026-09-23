@@ -1,0 +1,443 @@
+/* 🎨 ESTILOS CANCIONERO */
+
+:root {
+    --color-primario: #6366f1;
+    --color-secundario: #10b981;
+    --color-peligro: #ef4444;
+    --color-advertencia: #f59e0b;
+    
+    --color-fondo: #0f172a;
+    --color-superficie: #1e293b;
+    --color-superficie-alt: #334155;
+    --color-texto: #f1f5f9;
+    --color-texto-secundario: #cbd5e1;
+    --color-borde: #475569;
+    
+    --radio-borde: 8px;
+    --espacio: 1rem;
+    --espacio-lg: 2rem;
+}
+
+/* ========== RESET GLOBAL ========== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
+}
+
+/* ========== HEADER ========== */
+
+.header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border-bottom: 1px solid var(--color-borde);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: var(--espacio) 0;
+}
+
+.header-contenido {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 var(--espacio);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--espacio);
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-texto);
+}
+
+/* ========== INDICADOR DE SINCRONIZACIÓN ========== */
+
+.estado-sincronizacion {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-superficie);
+    border-radius: var(--radio-borde);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-texto-secundario);
+}
+
+.icono-estado {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    border-radius: 50%;
+}
+
+.icono-estado.sincronizado {
+    background-color: var(--color-secundario);
+    color: white;
+}
+
+.icono-estado.pendiente {
+    background-color: var(--color-advertencia);
+    color: white;
+    animation: girar 2s linear infinite;
+}
+
+.icono-estado.error {
+    background-color: var(--color-peligro);
+    color: white;
+}
+
+@keyframes girar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ========== BUSCADOR ========== */
+
+.buscador {
+    width: 100%;
+    max-width: 800px;
+    margin: var(--espacio-lg) auto var(--espacio);
+    padding: var(--espacio);
+    display: block;
+    background-color: var(--color-superficie);
+    border: 2px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    color: var(--color-texto);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.buscador:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    background-color: var(--color-superficie-alt);
+}
+
+.buscador::placeholder {
+    color: var(--color-texto-secundario);
+}
+
+/* ========== LISTA DE CANCIONES ========== */
+
+.lista-canciones {
+    max-width: 800px;
+    margin: 0 auto var(--espacio-lg);
+    padding: 0 var(--espacio);
+    display: grid;
+    gap: var(--espacio);
+}
+
+.sin-canciones {
+    text-align: center;
+    color: var(--color-texto-secundario);
+    padding: var(--espacio-lg) var(--espacio);
+}
+
+/* ========== TARJETA CANCIÓN ========== */
+
+.tarjeta-cancion {
+    background-color: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tarjeta-cancion:hover {
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    transform: translateY(-2px);
+}
+
+.tarjeta-cancion h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-texto);
+}
+
+.tarjeta-cancion p {
+    font-size: 0.95rem;
+    color: var(--color-texto-secundario);
+    margin-bottom: 0.75rem;
+}
+
+.etiqueta-categoria {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: var(--color-primario);
+    color: white;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* ========== VER CANCIÓN ========== */
+
+.cabecera-cancion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--espacio-lg);
+    gap: var(--espacio);
+}
+
+.info-cancion {
+    margin-bottom: var(--espacio-lg);
+    padding-bottom: var(--espacio-lg);
+    border-bottom: 1px solid var(--color-borde);
+}
+
+.info-cancion h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.info-cancion h2 {
+    font-size: 1.25rem;
+    color: var(--color-texto-secundario);
+    margin-bottom: 1rem;
+}
+
+#lista-canciones pre {
+    background-color: var(--color-superficie-alt);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    padding: var(--espacio-lg);
+    font-size: 0.85rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* ========== BOTONES ========== */
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: var(--radio-borde);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Botón Agregar */
+.boton-agregar {
+    display: block;
+    margin: var(--espacio) auto var(--espacio-lg);
+    padding: 1rem 2rem;
+    background-color: var(--color-primario);
+    color: white;
+}
+
+.boton-agregar:hover {
+    background-color: #4f46e5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Botón Volver */
+.boton-volver {
+    background-color: transparent;
+    color: var(--color-primario);
+    border: 1px solid var(--color-borde);
+    padding: 0.5rem 1rem;
+}
+
+.boton-volver:hover {
+    background-color: var(--color-superficie-alt);
+}
+
+/* Botón Editar */
+.boton-editar {
+    background-color: var(--color-primario);
+    color: white;
+    padding: 0.5rem 1rem;
+}
+
+.boton-editar:hover {
+    background-color: #4f46e5;
+}
+
+/* Botón Eliminar */
+.boton-eliminar {
+    background-color: var(--color-peligro);
+    color: white;
+    padding: 0.5rem 1rem;
+}
+
+.boton-eliminar:hover {
+    background-color: #dc2626;
+}
+
+.acciones-cancion {
+    display: flex;
+    gap: var(--espacio);
+}
+
+/* ========== FORMULARIO ========== */
+
+.formulario-cancion {
+    max-width: 600px;
+    margin: var(--espacio-lg) auto;
+    padding: var(--espacio-lg);
+    background-color: var(--color-superficie);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    display: none;
+}
+
+.formulario-cancion h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--espacio-lg);
+}
+
+.grupo-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: var(--espacio-lg);
+}
+
+.grupo-campo label {
+    font-weight: 600;
+    color: var(--color-texto);
+}
+
+.grupo-campo input,
+.grupo-campo select,
+.grupo-campo textarea {
+    padding: var(--espacio);
+    background-color: var(--color-superficie-alt);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    color: var(--color-texto);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.grupo-campo input:focus,
+.grupo-campo select:focus,
+.grupo-campo textarea:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    background-color: var(--color-fondo);
+}
+
+.grupo-campo textarea {
+    resize: vertical;
+    min-height: 200px;
+}
+
+.grupo-botones {
+    display: flex;
+    gap: var(--espacio);
+    margin-top: var(--espacio-lg);
+}
+
+.boton-guardar {
+    flex: 1;
+    background-color: var(--color-secundario);
+    color: white;
+}
+
+.boton-guardar:hover {
+    background-color: #059669;
+}
+
+.boton-cancelar {
+    flex: 1;
+    background-color: var(--color-superficie-alt);
+    color: var(--color-texto);
+    border: 1px solid var(--color-borde);
+}
+
+.boton-cancelar:hover {
+    background-color: var(--color-borde);
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 640px) {
+    :root {
+        font-size: 16px;
+    }
+
+    .header-contenido {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header h1 {
+        font-size: 1.25rem;
+    }
+
+    .estado-sincronizacion {
+        font-size: 0.75rem;
+    }
+
+    .cabecera-cancion {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .acciones-cancion {
+        flex-direction: column;
+    }
+
+    .boton-volver,
+    .boton-editar,
+    .boton-eliminar {
+        width: 100%;
+    }
+
+    .info-cancion h1 {
+        font-size: 1.5rem;
+    }
+
+    .info-cancion h2 {
+        font-size: 1rem;
+    }
+
+    #lista-canciones pre {
+        font-size: 1rem;
+        padding: var(--espacio);
+    }
+
+    .grupo-botones {
+        flex-direction: column;
+    }
+}

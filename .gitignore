@@ -1,0 +1,37 @@
+# 🔐 SEGURIDAD - No subir archivos con credenciales
+
+# Configuración de Supabase con credenciales
+supabase-config.js
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Archivos del sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (si agregas backend)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Backup de canciones
+canciones_backup.json
+*.backup
+
+# Logs
+*.log
