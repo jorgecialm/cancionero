@@ -129,6 +129,11 @@ class SincronizadorCancionero {
                         this.cambiarEstado("sincronizado");
                         return cancionExistente;
                     }
+
+                    console.error(
+                        "❌ Supabase rechazó la canción por duplicada, pero no se pudo localizar el registro existente:",
+                        datos
+                    );
                 }
 
                 console.error("❌ Error al subir canción:", datos);
