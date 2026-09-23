@@ -6,6 +6,7 @@ const CACHE_EDAD_MAX = 7 * 24 * 60 * 60 * 1000; // 7 días
 const ASSETS = [
     "./",
     "./index.html",
+    "./manifest.json",
     "./style.css",
     "./app.js",
     "./sync.js",
