@@ -45,9 +45,8 @@ async function cargarCancionesLocales() {
 
 async function descargarCancionesDesdeSupabase() {
     try {
-        const cancionesLocales = [...canciones];
         const respuesta = await fetch(
-            `${SUPABASE_URL}/rest/v1/canciones?select=*`,
+            `${SUPABASE_URL}/rest/v1/canciones?select=*&order=id.asc`,
             {
                 headers: {
                     apikey: SUPABASE_ANON_KEY
@@ -55,21 +54,31 @@ async function descargarCancionesDesdeSupabase() {
             }
         );
 
-        if (!respuesta.ok) throw new Error("Error al descargar");
+        if (!respuesta.ok) throw new Error("Error al descargar canciones desde Supabase");
 
         const datos = await respuesta.json();
-        const clavesRemotas = new Set(
-            datos.map(cancion => `${cancion.titulo}\u0000${cancion.artista}`)
-        );
-        const pendientesLocales = cancionesLocales.filter(cancion =>
-            !clavesRemotas.has(`${cancion.titulo}\u0000${cancion.artista}`)
-        );
 
-        canciones = [...datos, ...pendientesLocales];
+        // Supabase es la fuente de verdad.
+        // Solo conservamos canciones locales si corresponden a un cambio pendiente legítimo (agregado sin conexión)
+        const pendientes = (typeof sincronizador !== "undefined")
+            ? sincronizador.obtenerCambiosPendientes().filter(c => c.tipo === "INSERT").map(c => c.cancion)
+            : [];
+
+        const cancionesFinales = [...datos];
+        for (const pend of pendientes) {
+            const existe = cancionesFinales.some(
+                c => c.id === pend.id || (c.titulo || "").trim().toLowerCase() === (pend.titulo || "").trim().toLowerCase()
+            );
+            if (!existe) {
+                cancionesFinales.push(pend);
+            }
+        }
+
+        canciones = cancionesFinales;
         guardarCancionesLocalmente();
         mostrarLista(canciones);
-        
-        console.log("✓ Canciones descargadas desde Supabase");
+
+        console.log("✓ Canciones sincronizadas desde Supabase:", canciones.map(c => `"${c.titulo}" (id: ${c.id})`));
     } catch (error) {
         console.error("Error descargando canciones:", error);
     }

@@ -1,23 +1,30 @@
 [
-  {
-    "id": 1,
-    "titulo": "Sol de la mañana",
-    "artista": "Artista Demo",
-    "categoria": "Canto",
-    "letra": "Sol de la mañana, me despierta\nCon tu brillo en el corazón\nY me enseñas a seguir\nAunque el camino sea largo."
-  },
-  {
-    "id": 2,
-    "titulo": "Camino sin fin",
-    "artista": "Grupo Demo",
-    "categoria": "Ensamble",
-    "letra": "Si el viento me empuja\nYo sigo caminando\nCon la fe en la mano\nY el sueño en el alma."
-  },
-  {
-    "id": 3,
-    "titulo": "Raíces del pueblo",
-    "artista": "Folclore Demo",
-    "categoria": "Folclore",
-    "letra": "De la tierra nací\nCon la música en mi voz\nY llevo en el pecho\nLas raíces del pueblo."
-  }
+    {
+        "id": 1,
+        "titulo": "No es lo mismo",
+        "artista": "Jorge Rojas",
+        "categoria": "Canto",
+        "letra": "Una zamba me nace en el alma\ncada vez que me acuerdo de vos\ny se vuelve nostalgia en mi canto\nel recuerdo del \u00faltimo adi\u00f3s\ny parece llorar mi guitarra\ntal vez porque siente lo mismo que yo\n\nTantos besos muriendo de a poco\ncu\u00e1ntos sue\u00f1os quedaron atr\u00e1s\nlos momentos felices pasaron\ny presiento que no volver\u00e1n\nno he podido olvidarte y por eso\nalgunas heridas no van a cerrar\n\nSi alguna vez te vuelvo a ver\nojal\u00e1 pudiera saber la verdad\npor qu\u00e9 tu amor un cielo azul\nse qued\u00f3 de pronto en la oscuridad\nno es lo mismo dejar de quererme\na decir que no me has amado jam\u00e1s\n\nC\u00f3mo pudo un amor tan profundo\nterminar porque s\u00ed nada m\u00e1s\nno lo entiendo y a\u00fan me pregunto\nc\u00f3mo fue que ha llegado al final\nlo que ayer era un campo de flores\nhoy es por tu ausencia un desierto de sal\n\nY me toca seguir el camino\nel que nunca ser\u00e1 de los dos\ndesde que no te tengo conmigo\napenado va mi coraz\u00f3n\ny si no puedo echarte al olvido\nentonces cantando las penas me voy\n\nSi alguna vez te vuelvo a ver\nojala pudiera saber la verdad\npor qu\u00e9 tu amor un cielo azul\nse qued\u00f3 de pronto en la oscuridad\nno es lo mismo dejar de quererme\na decir que no me has amado jam\u00e1s."
+    },
+    {
+        "id": 3,
+        "titulo": "Garganta con Arena",
+        "artista": "Cacho Casta\u00f1a",
+        "categoria": "Canto",
+        "letra": "Ya ves,\nel d\u00eda no amanece,\nPolaco Goyeneche,\ncantame un tango m\u00e1s.\nYa ves,\nla noche se hace larga,\ntu vida tiene un karma,\ncantar, siempre cantar.\n\nTu voz,\nque al tango lo emociona\ndiciendo el punto y coma\nque nadie le cant\u00f3.\nTu voz,\nde duendes y fantasmas,\nrespira con el asma\nde un viejo bandone\u00f3n.\n\nCanta\ngarganta con arena,\ntu voz tiene la pena\nque Malena no cant\u00f3.\nCanta,\nque Ju\u00e1rez te condena\nal lastimar tu pena,\ncon su blanco bandone\u00f3n.\n\nCanta,\nla gente est\u00e1 aplaudiendo,\ny aunque te est\u00e9s muriendo\nno conocen tu dolor.\nCanta,\nque Troilo desde el cielo,\ndebajo de tu almohada\nun verso te dej\u00f3.\n\nCantor,\nde un tango algo insolente,\nhiciste que a la gente\nle duela tu dolor.\nCantor,\nde un tango equilibrista,\nm\u00e1s que cantor artista,\ncon vicios de cantor.\n\nYa ves,\na m\u00ed y a Buenos Aires\nnos falta siempre el aire\ncuando no esta tu voz.\nA vos,\nque tanto me ense\u00f1aste,\nel d\u00eda que cantaste\nconmigo una canci\u00f3n."
+    },
+    {
+        "id": 6,
+        "titulo": "La llave",
+        "artista": "Abel Pintos",
+        "categoria": "Canto",
+        "letra": "La soledad se hace carne en m\u00ed\nY la noche parece un desierto\nPero llegas t\u00fa con tu inmensa luz\nY te declaras due\u00f1a de mis sue\u00f1os\n\nEl tiempo viste un color azul\nParecido a un suspiro del cielo\nDe solo saber que te voy a ver\nY a regalarte todos mis momentos\n\nVas a verme llegar\nY vas a o\u00edr mi canci\u00f3n\nVas a entrar sin pedirme la llave\nLa distancia y el tiempo no saben\nLa falta que le haces a mi coraz\u00f3n\n\nVas a verme llegar\nY vas a o\u00edr mi canci\u00f3n\nVas a entrar sin pedirme la llave\nLa distancia y el tiempo no saben\nLa falta que le haces a mi coraz\u00f3n\n\nLa soledad se hace carne en m\u00ed\nY la noche parece un desierto\nPero llegas t\u00fa con tu inmensa luz\nY te declaras due\u00f1a de mis sue\u00f1os\n\nEl tiempo viste un color azul\nParecido a un suspiro del cielo\nDe solo saber que te voy a ver\nY a regalarte todos mis momentos\n\nVas a verme llegar\nY vas a o\u00edr mi canci\u00f3n\nVas a entrar sin pedirme la llave\nLa distancia y el tiempo no saben\nLa falta que le haces a mi coraz\u00f3n\n\nVas a verme llegar\nY vas a o\u00edr mi canci\u00f3n\nVas a entrar sin pedirme la llave\nLa distancia y el tiempo no saben\nLa falta que le haces a mi coraz\u00f3n\n\nPorque puedo callar mis palabras\nY escucharte en el viento hablar\nPorque puedo so\u00f1ar para verte\nY tenerte a\u00fan sin so\u00f1ar\n\nVas a verme llegar\nY vas a o\u00edr mi canci\u00f3n\nVas a entrar sin pedirme la llave\nLa distancia y el tiempo no saben\nLa falta que le haces a mi coraz\u00f3n\n\nVas a verme llegar\nY vas a o\u00edr mi canci\u00f3n\nVas a entrar sin pedirme la llave\nLa distancia y el tiempo no saben\nLa falta que le haces a mi coraz\u00f3n\n"
+    },
+    {
+        "id": 2,
+        "titulo": "Te esperaba",
+        "artista": "Carlos Rivera",
+        "categoria": "Canto",
+        "letra": "Te ped\u00ed\nCon mi fuerza al universo\nTe escrib\u00ed en un par de versos\nQue mand\u00e9 volando al cielo\nTe ped\u00ed\n\nTe so\u00f1\u00e9\nY te am\u00e9 sin conocerte\nMis abrazos te llamaban\nA un ladito de la cama\nTe so\u00f1\u00e9\n\nPresent\u00ed\nCada d\u00eda tu mirada\nTu llegada, me rend\u00ed\nAnte el brillo de tu alma\n\nS\u00ed, soy aquel que desde siempre te esperaba\nPuedo admitir\nQue aunque fuera una locura no dudaba\nS\u00ed, en mi coraz\u00f3n tu espacio yo guardaba\nY ahora que est\u00e1s aqu\u00ed\nVeo el amor convertido en ti\n\nTe encontr\u00e9\nAl final de la escalera\nEn la guerra de mi vida\nT\u00fa hab\u00edas sido mi bandera\nY te encontr\u00e9\n\nPresent\u00ed\nCada d\u00eda tu mirada\nTu llegada, me rend\u00ed\nAnte el brillo de tu alma\n\nS\u00ed, soy aquel que desde siempre te esperaba\nPuedo admitir\nQue aunque fuera una locura no dudaba\nS\u00ed, s\u00ed, s\u00ed, en mi coraz\u00f3n tu espacio yo guardaba\nY ahora que est\u00e1s aqu\u00ed\nY ahora que est\u00e1s aqu\u00ed\nVeo el amor convertido en ti"
+    }
 ]

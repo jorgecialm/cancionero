@@ -1,6 +1,6 @@
 // 🚀 SERVICE WORKER - ESTRATEGIA INTELIGENTE DE CACHING
 
-const CACHE_NAME = "cancionero-v3";
+const CACHE_NAME = "cancionero-v5";
 const CACHE_EDAD_MAX = 7 * 24 * 60 * 60 * 1000; // 7 días
 
 const ASSETS = [
@@ -18,7 +18,7 @@ const ASSETS = [
 // ========== INSTALACIÓN ==========
 
 self.addEventListener("install", (evento) => {
-    console.log("🚀 SW: Instalando...");
+    console.log("🚀 SW: Instalando cancionero-v5...");
     self.skipWaiting();
     evento.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
@@ -30,7 +30,7 @@ self.addEventListener("install", (evento) => {
 // ========== ACTIVACIÓN - LIMPIAR CACHE VIEJO ==========
 
 self.addEventListener("activate", (evento) => {
-    console.log("🚀 SW: Activando...");
+    console.log("🚀 SW: Activando cancionero-v5...");
     evento.waitUntil(self.clients.claim());
     evento.waitUntil(
         caches.keys().then((nombres) => {
@@ -51,13 +51,20 @@ self.addEventListener("activate", (evento) => {
 self.addEventListener("fetch", (evento) => {
     const url = evento.request.url;
 
-    // 1. DATOS desde Supabase → Network-first
-    if (url.includes("supabase.co")) {
+    // 1. DATOS de Supabase o scripts de la app → Network-first (para reflejar cambios de inmediato)
+    if (
+        url.includes("supabase.co") ||
+        url.endsWith("app.js") ||
+        url.endsWith("sync.js") ||
+        url.endsWith("supabase-config.js") ||
+        url.endsWith("index.html") ||
+        url.endsWith("/")
+    ) {
         evento.respondWith(networkFirstStrategy(evento.request));
         return;
     }
 
-    // 2. ASSETS (CSS, JS, HTML, PNG) → Cache-first
+    // 2. ASSETS estáticos (imágenes, fuentes, iconos) → Cache-first
     if (esAsset(url)) {
         evento.respondWith(cacheFirstStrategy(evento.request));
         return;

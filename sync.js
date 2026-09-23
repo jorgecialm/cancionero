@@ -12,14 +12,14 @@ class SincronizadorCancionero {
 
         this.cargarCambiosPendientes();
         this.configurarEventosConexion();
-        this.iniciarSesion();
+        this.sesionIniciada = this.iniciarSesion();
     }
 
     // ========== AUTENTICACIÓN ==========
     async iniciarSesion() {
         if (!SUPABASE_CONFIG_AVAILABLE || !SUPABASE_URL || !SUPABASE_ANON_KEY || !SUPABASE_EMAIL || !SUPABASE_PASSWORD) {
             console.warn("⚠️ Supabase no está configurado. La app continuará en modo local.");
-            this.cambiarEstado("pendiente");
+            this.cambiarEstado("sincronizado");
             return;
         }
 
@@ -76,10 +76,10 @@ class SincronizadorCancionero {
     }
 
     async buscarCancionExistente(cancion) {
+        const tituloLimpio = (cancion.titulo || "").trim();
         const parametros = new URLSearchParams({
             select: "*",
-            titulo: `eq.${cancion.titulo}`,
-            artista: `eq.${cancion.artista}`,
+            titulo: `ilike.*${tituloLimpio}*`,
             limit: "1"
         });
         const respuesta = await fetch(
@@ -97,7 +97,7 @@ class SincronizadorCancionero {
 
     // ========== CRUD CON SUPABASE ==========
 
-    async subirCancion(cancion) {
+    async subirCancion(cancion, encolarEnFallo = true) {
         if (!SUPABASE_CONFIG_AVAILABLE || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
             console.warn("⚠️ Supabase no está configurado para subir canciones.");
             this.cambiarEstado("pendiente");
@@ -106,9 +106,13 @@ class SincronizadorCancionero {
 
         if (!this.tieneConexion) {
             console.log("📡 Sin conexión - guardar en cola de pendientes");
-            this.agregarCambioPendiente("INSERT", cancion);
+            if (encolarEnFallo) this.agregarCambioPendiente("INSERT", cancion);
             this.cambiarEstado("pendiente");
             return { id: this.generarIdTemporal() };
+        }
+
+        if (this.sesionIniciada) {
+            await this.sesionIniciada;
         }
 
         try {
@@ -130,14 +134,16 @@ class SincronizadorCancionero {
                         return cancionExistente;
                     }
 
-                    console.error(
-                        "❌ Supabase rechazó la canción por duplicada, pero no se pudo localizar el registro existente:",
+                    console.warn(
+                        "⚠️ Supabase confirmó que la canción ya existe, pero no se pudo leer el registro existente. Se conservará la copia local:",
                         datos
                     );
+                    this.cambiarEstado("sincronizado");
+                    return cancion;
                 }
 
                 console.error("❌ Error al subir canción:", datos);
-                this.agregarCambioPendiente("INSERT", cancion);
+                if (encolarEnFallo) this.agregarCambioPendiente("INSERT", cancion);
                 this.cambiarEstado("error");
                 return null;
             }
@@ -148,13 +154,13 @@ class SincronizadorCancionero {
 
         } catch (error) {
             console.error("❌ Error de conexión al subir:", error);
-            this.agregarCambioPendiente("INSERT", cancion);
+            if (encolarEnFallo) this.agregarCambioPendiente("INSERT", cancion);
             this.cambiarEstado("pendiente");
             return null;
         }
     }
 
-    async actualizarCancion(id, cancion) {
+    async actualizarCancion(id, cancion, encolarEnFallo = true) {
         if (!SUPABASE_CONFIG_AVAILABLE || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
             console.warn("⚠️ Supabase no está configurado para actualizar canciones.");
             this.cambiarEstado("pendiente");
@@ -163,9 +169,13 @@ class SincronizadorCancionero {
 
         if (!this.tieneConexion) {
             console.log("📡 Sin conexión - guardar en cola de pendientes");
-            this.agregarCambioPendiente("UPDATE", { id, ...cancion });
+            if (encolarEnFallo) this.agregarCambioPendiente("UPDATE", { id, ...cancion });
             this.cambiarEstado("pendiente");
             return true;
+        }
+
+        if (this.sesionIniciada) {
+            await this.sesionIniciada;
         }
 
         try {
@@ -180,7 +190,7 @@ class SincronizadorCancionero {
 
             if (!respuesta.ok) {
                 console.error("❌ Error al actualizar canción");
-                this.agregarCambioPendiente("UPDATE", { id, ...cancion });
+                if (encolarEnFallo) this.agregarCambioPendiente("UPDATE", { id, ...cancion });
                 this.cambiarEstado("error");
                 return false;
             }
@@ -191,13 +201,13 @@ class SincronizadorCancionero {
 
         } catch (error) {
             console.error("❌ Error de conexión al actualizar:", error);
-            this.agregarCambioPendiente("UPDATE", { id, ...cancion });
+            if (encolarEnFallo) this.agregarCambioPendiente("UPDATE", { id, ...cancion });
             this.cambiarEstado("pendiente");
             return false;
         }
     }
 
-    async eliminarCancion(id) {
+    async eliminarCancion(id, encolarEnFallo = true) {
         if (!SUPABASE_CONFIG_AVAILABLE || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
             console.warn("⚠️ Supabase no está configurado para eliminar canciones.");
             this.cambiarEstado("pendiente");
@@ -206,9 +216,13 @@ class SincronizadorCancionero {
 
         if (!this.tieneConexion) {
             console.log("📡 Sin conexión - guardar en cola de pendientes");
-            this.agregarCambioPendiente("DELETE", { id });
+            if (encolarEnFallo) this.agregarCambioPendiente("DELETE", { id });
             this.cambiarEstado("pendiente");
             return true;
+        }
+
+        if (this.sesionIniciada) {
+            await this.sesionIniciada;
         }
 
         try {
@@ -222,7 +236,7 @@ class SincronizadorCancionero {
 
             if (!respuesta.ok) {
                 console.error("❌ Error al eliminar canción");
-                this.agregarCambioPendiente("DELETE", { id });
+                if (encolarEnFallo) this.agregarCambioPendiente("DELETE", { id });
                 this.cambiarEstado("error");
                 return false;
             }
@@ -233,7 +247,7 @@ class SincronizadorCancionero {
 
         } catch (error) {
             console.error("❌ Error de conexión al eliminar:", error);
-            this.agregarCambioPendiente("DELETE", { id });
+            if (encolarEnFallo) this.agregarCambioPendiente("DELETE", { id });
             this.cambiarEstado("pendiente");
             return false;
         }
@@ -275,7 +289,7 @@ class SincronizadorCancionero {
         console.log("🔄 Sincronizando cambios pendientes...");
         this.cambiarEstado("pendiente");
 
-        for (const cambio of this.cambiosPendientes) {
+        for (const cambio of [...this.cambiosPendientes]) {
             if (cambio.intentos >= this.maxReintentos) {
                 console.error("⚠️ Máximo de reintentos alcanzado para:", cambio);
                 continue;
@@ -285,24 +299,28 @@ class SincronizadorCancionero {
 
             try {
                 if (cambio.tipo === "INSERT") {
-                    const resultado = await this.subirCancion(cambio.cancion);
+                    const resultado = await this.subirCancion(cambio.cancion, false);
                     exito = resultado !== null;
                 } else if (cambio.tipo === "UPDATE") {
                     const { id, ...datos } = cambio.cancion;
-                    exito = await this.actualizarCancion(id, datos);
+                    exito = await this.actualizarCancion(id, datos, false);
                 } else if (cambio.tipo === "DELETE") {
-                    exito = await this.eliminarCancion(cambio.cancion.id);
+                    exito = await this.eliminarCancion(cambio.cancion.id, false);
                 }
 
                 if (exito) {
                     this.cambiosPendientes = this.cambiosPendientes.filter(
-                        c => c.timestamp !== cambio.timestamp
+                        c => c !== cambio
                     );
+                    this.guardarCambiosPendientes();
+                } else {
+                    cambio.intentos = (cambio.intentos || 0) + 1;
                     this.guardarCambiosPendientes();
                 }
             } catch (error) {
                 console.error("❌ Error al sincronizar:", error);
-                cambio.intentos++;
+                cambio.intentos = (cambio.intentos || 0) + 1;
+                this.guardarCambiosPendientes();
             }
         }
 
