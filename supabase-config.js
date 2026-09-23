@@ -1,4 +1,9 @@
-const SUPABASE_URL = "https://jvrimcqtkgdvnftgvczo.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_WRdZb_B6kJY1z-dGR6JpJg_BCuxO_2K";
-const SUPABASE_EMAIL = "jorgecialm@gmail.com";
-const SUPABASE_PASSWORD = "123456789";
+// Configuración de Supabase opcional para despliegues estáticos.
+// En Vercel, usa variables de entorno o configura este archivo con tus credenciales reales
+// sin subir secretos al repositorio.
+const SUPABASE_URL = "";
+const SUPABASE_ANON_KEY = "";
+const SUPABASE_EMAIL = "";
+const SUPABASE_PASSWORD = "";
+
+const SUPABASE_CONFIG_AVAILABLE = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);

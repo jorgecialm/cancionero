@@ -7,40 +7,45 @@ let idEditando = null;
 // ========== INICIALIZACIÓN ==========
 
 async function inicializar() {
-    cargarCancionesLocales();
+    await cargarCancionesLocales();
     configurarBuscador();
     configurarFormulario();
     configurarEventosSincronizacion();
-    
-    // Intenta cargar desde Supabase si hay conexión
-    if (navigator.onLine) {
+
+    if (typeof SUPABASE_CONFIG_AVAILABLE !== "undefined" && SUPABASE_CONFIG_AVAILABLE && navigator.onLine) {
         await descargarCancionesDesdeSupabase();
     }
 }
 
 // ========== CARGA DE DATOS ==========
 
-function cargarCancionesLocales() {
+async function cargarCancionesLocales() {
     const cancionesGuardadas = localStorage.getItem("canciones");
     
     if (cancionesGuardadas) {
         canciones = JSON.parse(cancionesGuardadas);
     } else {
-        // Fallback a JSON local
-        fetch("canciones.json")
-            .then(r => r.json())
-            .then(datos => {
-                canciones = datos;
-                guardarCancionesLocalmente();
-            });
-        return;
+        try {
+            const respuesta = await fetch("canciones.json");
+            if (!respuesta.ok) {
+                throw new Error("No se pudo cargar canciones.json");
+            }
+
+            const datos = await respuesta.json();
+            canciones = Array.isArray(datos) ? datos : [];
+            guardarCancionesLocalmente();
+        } catch (error) {
+            console.error("Error cargando canciones locales:", error);
+            canciones = [];
+        }
     }
-    
+
     mostrarLista(canciones);
 }
 
 async function descargarCancionesDesdeSupabase() {
     try {
+        const cancionesLocales = [...canciones];
         const respuesta = await fetch(
             `${SUPABASE_URL}/rest/v1/canciones?select=*`,
             {
@@ -53,7 +58,14 @@ async function descargarCancionesDesdeSupabase() {
         if (!respuesta.ok) throw new Error("Error al descargar");
 
         const datos = await respuesta.json();
-        canciones = datos;
+        const clavesRemotas = new Set(
+            datos.map(cancion => `${cancion.titulo}\u0000${cancion.artista}`)
+        );
+        const pendientesLocales = cancionesLocales.filter(cancion =>
+            !clavesRemotas.has(`${cancion.titulo}\u0000${cancion.artista}`)
+        );
+
+        canciones = [...datos, ...pendientesLocales];
         guardarCancionesLocalmente();
         mostrarLista(canciones);
         
@@ -181,16 +193,18 @@ function configurarFormulario() {
 
         } else {
             // ========== AGREGAR ==========
-            // Sincronizar con Supabase primero
+            // Guardar localmente primero para no bloquear el formulario por un error de red.
+            cancion.id = sincronizador.generarIdTemporal();
+            canciones.push(cancion);
+            guardarCancionesLocalmente();
+
             const cancionSupabase = await sincronizador.subirCancion(cancion);
             
             if (cancionSupabase) {
                 cancion.id = cancionSupabase.id;
-                canciones.push(cancion);
+                guardarCancionesLocalmente();
                 alert("✓ Canción agregada correctamente");
             } else {
-                cancion.id = sincronizador.generarIdTemporal();
-                canciones.push(cancion);
                 alert("⚠️  Canción guardada localmente pero no se sincronizó aún");
             }
         }
