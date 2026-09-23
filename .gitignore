@@ -1,7 +1,7 @@
 # 🔐 SEGURIDAD - No subir archivos con credenciales
 
 # Configuración de Supabase con credenciales
-supabase-config.js
+
 
 # Variables de entorno
 .env
